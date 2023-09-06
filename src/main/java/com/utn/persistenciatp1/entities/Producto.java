@@ -27,17 +27,21 @@ public class Producto extends BaseEntidad{
     private String foto;
     private String receta;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name="factura_id")
-    private Factura factura;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "pedido_id")
-    @Builder.Default
-    private List<DetallePedido> detalles = new ArrayList<>();
-
     public enum Tipo{
         MANUFACTURADO, INSUMO;
+    }
+
+    public void mostrarProducto(){
+        System.out.println("Tipo: " + tipo);
+        System.out.println("Denominación: " + denominacion);
+        System.out.println("Tiempo estimado: " + tiempoEstimadoCocina);
+        System.out.println("Precio de venta: " + precioVenta);
+        System.out.println("Precio de compra: " + precioCompra);
+        System.out.println("Stock disponible: " + stockActual);
+        System.out.println("Stock mínimo: " + stockMinimo);
+        System.out.println("Unidad de medida: " + unidadMedida);
+        System.out.println("Foto: " + foto);
+        System.out.println("Receta: " + receta);
     }
 
 }
