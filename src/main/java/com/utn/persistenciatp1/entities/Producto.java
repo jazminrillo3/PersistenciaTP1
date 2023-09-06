@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 public class Producto extends BaseEntidad{
 
+    @Enumerated(EnumType.STRING)
     private Tipo tipo;
     private int tiempoEstimadoCocina;
     private String denominacion;

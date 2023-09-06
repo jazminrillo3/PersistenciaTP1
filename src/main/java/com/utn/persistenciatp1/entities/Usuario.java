@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 @Data
@@ -18,12 +19,17 @@ public class Usuario extends BaseEntidad {
 
     private String nombre;
     private String password;
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id")
     @Builder.Default
     private List<Pedido> pedidos = new ArrayList<>();
+
+    public enum Rol{
+        ADMIN, CLIENTE, COCINERO, CAJERO, DELIVERY;
+    }
 
     public void agregarPedido(Pedido p){
         pedidos.add(p);
@@ -35,7 +41,8 @@ public class Usuario extends BaseEntidad {
         System.out.println("Rol: " + rol);
         System.out.println("Pedidos: ");
         for (Pedido pedido : pedidos) {
-            System.out.println(pedido.getFecha());
+            System.out.println("-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");
+            pedido.mostrarPedido();
         }
     }
 
