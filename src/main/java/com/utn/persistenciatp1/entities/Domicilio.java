@@ -22,11 +22,20 @@ public class Domicilio extends BaseEntidad {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="domicilio_id")
+    @Builder.Default
     private List<Pedido> pedidos = new ArrayList<>();
 
     //Para mi tiene mas sentido hacerlo desde la entidad Cliente, que tenga una lista de domicilios
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="cliente_id")
     private Cliente cliente;
+
+    public void agregarPedido(Pedido p){
+        pedidos.add(p);
+    }
+
+    public void mostrarDomicilio(){
+        System.out.println(calle + " " + numero + ", " + localidad);
+    }
 
 }

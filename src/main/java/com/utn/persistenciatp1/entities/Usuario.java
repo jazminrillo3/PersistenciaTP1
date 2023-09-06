@@ -41,7 +41,7 @@ public class Usuario extends BaseEntidad {
         System.out.println("Rol: " + rol);
         System.out.println("Pedidos: ");
         for (Pedido pedido : pedidos) {
-            System.out.println("-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");
+            System.out.println("//////////////////////////////////");
             pedido.mostrarPedido();
         }
     }

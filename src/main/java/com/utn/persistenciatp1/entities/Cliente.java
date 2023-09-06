@@ -21,9 +21,26 @@ public class Cliente extends BaseEntidad {
     private String telefono;
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //Me daba error si ponía CascadeType.ALL
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
     @Builder.Default
     private List<Pedido> pedidos = new ArrayList<>();
+
+    public void agregarPedido(Pedido p){
+        pedidos.add(p);
+    }
+
+    public void mostrarCliente(){
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Apellido: " + apellido);
+        System.out.println("Teléfono: " + telefono);
+        System.out.println("Email: " + email);
+        System.out.println("Pedidos: ");
+        for (Pedido pedido: pedidos) {
+            System.out.println("//////////////////////////////////");
+            pedido.mostrarPedido();
+        }
+    }
 
 }
