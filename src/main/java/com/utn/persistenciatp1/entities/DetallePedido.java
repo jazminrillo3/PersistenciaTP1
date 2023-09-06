@@ -16,8 +16,19 @@ public class DetallePedido extends BaseEntidad {
     private int cantidad;
     private Double subtotal;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //Si le ponía CascadeType me daba error al asignar el producto al detalle
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "producto_id")
     private Producto producto;
+
+    public void mostrarDetalle(){
+        System.out.println("Cantidad: " + cantidad);
+        System.out.println("Subtotal: $" + subtotal);
+        System.out.println("Producto: " + producto.getDenominacion());
+    }
+
+    public void calcularSubtotal(){
+        subtotal = cantidad * producto.getPrecioVenta();
+    }
 
 }
