@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -37,7 +38,7 @@ public class PersistenciaTp1Application {
 	@Bean
 	CommandLineRunner init() {
 		return args -> {
-			System.out.println("-----------------ESTOY FUNCIONANDO---------");
+			System.out.println("-----------------ESTOY FUNCIONANDO----------------");
 
 			// Creo los productos
 			Producto muzza = Producto.builder()
@@ -182,10 +183,48 @@ public class PersistenciaTp1Application {
 
 			usuario.agregarPedido(pedido2);
 
+			// Creo DOMICILIOS y se los asigno a un CLIENTE
+
+			Cliente cliente = Cliente.builder()
+					.nombre("Jazmín")
+					.apellido("Rillo")
+					.email("jazmin.rillo@gmail.com")
+					.telefono("261 2545962")
+					.build();
+
+			cliente.agregarPedido(pedido1);
+			cliente.agregarPedido(pedido2);
+
+			Domicilio domicilio1 = Domicilio.builder()
+					.calle("San Martín")
+					.numero(1234)
+					.localidad("Mendoza")
+					.build();
+
+			Domicilio domicilio2 = Domicilio.builder()
+					.calle("9 de Julio")
+					.numero(6433)
+					.localidad("San Isidro")
+					.build();
+
+			domicilioRepository.save(domicilio1);
+			domicilioRepository.save(domicilio2);
+
+			domicilio1.setCliente(cliente);
+			domicilio2.setCliente(cliente);
+
+			domicilio1.agregarPedido(pedido1);
+			domicilio2.agregarPedido(pedido2);
+
 			usuarioRepository.save(usuario);
 
 			pedidoRepository.save(pedido1);
 			pedidoRepository.save(pedido2);
+
+			clienteRepository.save(cliente);
+
+			domicilioRepository.save(domicilio1);
+			domicilioRepository.save(domicilio2);
 
 			facturaRepository.save(facturaPedido1);
 			facturaRepository.save(facturaPedido2);
@@ -236,9 +275,41 @@ public class PersistenciaTp1Application {
 			}
 		}
 
+		// Recupero los clientes desde la base de datos
+
+		// A su vez recupero sus pedidos y sus respectivos detalles y facturas desde la base de datos
+
+		//Recupero domicilios
+		List<Domicilio> domicilios = domicilioRepository.findAll();
+
+		List<Cliente> clientes = clienteRepository.findAll();
+		if (!clientes.isEmpty()){
+			System.out.println("---- Información recuperada de los clientes: ----");
+			for (Cliente cliente : clientes) {
+				System.out.println("Domicilios: ");
+				List<Domicilio> domiciliosCliente = encontrarDomicilios(domicilios, cliente);
+				if (!domiciliosCliente.isEmpty()){
+					for (Domicilio d:domiciliosCliente) {
+						d.mostrarDomicilio();
+					};
+				}else{
+					System.out.println("-");
+				}
+
+				cliente.mostrarCliente();
+				System.out.println("-----------------------------------");
+			}
+		}
 
 
+	}
 
+	public List<Domicilio> encontrarDomicilios(List<Domicilio> domicilios, Cliente cliente){
+		List<Domicilio> encontrados = new ArrayList<>();
+		for (Domicilio domicilio : domicilios) {
+			if (domicilio.getCliente().getId().equals(cliente.getId())) encontrados.add(domicilio);
+		}
+		return encontrados;
 	}
 
 }
