@@ -32,7 +32,6 @@ public class Rubro extends BaseEntidad {
         System.out.println("Productos: ");
         for (Producto producto : productos) {
             System.out.println(producto.getDenominacion());
-            System.out.println("----------------------");
         }
     }
 
