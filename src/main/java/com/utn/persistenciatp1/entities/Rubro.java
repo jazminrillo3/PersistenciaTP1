@@ -23,5 +23,17 @@ public class Rubro extends BaseEntidad {
     @Builder.Default
     private List<Producto> productos = new ArrayList<>();
 
+    public void agregarProducto(Producto p){
+        productos.add(p);
+    }
+
+    public void mostrarRubro(){
+        System.out.println("Denominación: " + denominacion);
+        System.out.println("Productos: ");
+        for (Producto producto : productos) {
+            System.out.println(producto.getDenominacion());
+            System.out.println("----------------------");
+        }
+    }
 
 }
