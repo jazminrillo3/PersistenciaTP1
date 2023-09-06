@@ -17,8 +17,10 @@ import java.util.List;
 public class Pedido extends BaseEntidad{
 
     private String fecha;
+    @Enumerated(EnumType.STRING)
     private Estado estado;
     private String horaEstimadaEntrega;
+    @Enumerated(EnumType.STRING)
     private TipoEnvio tipoEnvio;
     private Double total;
 
@@ -31,12 +33,40 @@ public class Pedido extends BaseEntidad{
     @Builder.Default
     private List<DetallePedido> detalles = new ArrayList<>();
 
-    private enum Estado{
+    public enum Estado{
         INICIADO, PREPARACION, ENTREGADO;
     }
 
-    private enum TipoEnvio{
+    public enum TipoEnvio{
         DELIVERY, RETIRA;
+    }
+
+    public void agregarDetalle(DetallePedido d){
+        detalles.add(d);
+    }
+
+    public void mostrarPedido(){
+        System.out.println("Fecha: " + fecha);
+        System.out.println("Estado: " + estado);
+        System.out.println("Hora estimada de entrega: " + horaEstimadaEntrega);
+        System.out.println("Envío: " + tipoEnvio);
+        System.out.println("Total: $" + total);
+        System.out.println("********************");
+        System.out.println("Factura:");
+        factura.mostrarFactura();
+        System.out.println("********************");
+        System.out.println("Detalles:");
+        for (DetallePedido detalle : detalles) {
+            detalle.mostrarDetalle();
+        }
+    }
+
+    public void calcularTotal(){
+        double suma = 0;
+        for (DetallePedido detalle : detalles) {
+            suma += detalle.getSubtotal();
+        }
+        total = suma;
     }
 
 }
