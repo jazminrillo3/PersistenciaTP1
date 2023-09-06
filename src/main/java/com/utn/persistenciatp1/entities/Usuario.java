@@ -25,4 +25,18 @@ public class Usuario extends BaseEntidad {
     @Builder.Default
     private List<Pedido> pedidos = new ArrayList<>();
 
+    public void agregarPedido(Pedido p){
+        pedidos.add(p);
+    }
+
+    public void mostrarUsuario(){
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Contraseña: " + password);
+        System.out.println("Rol: " + rol);
+        System.out.println("Pedidos: ");
+        for (Pedido pedido : pedidos) {
+            System.out.println(pedido.getFecha());
+        }
+    }
+
 }

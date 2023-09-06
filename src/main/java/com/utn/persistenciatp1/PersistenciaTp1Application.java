@@ -1,9 +1,13 @@
 package com.utn.persistenciatp1;
 
+import com.utn.persistenciatp1.entities.Cliente;
 import com.utn.persistenciatp1.entities.Producto;
 import com.utn.persistenciatp1.entities.Rubro;
+import com.utn.persistenciatp1.entities.Usuario;
+import com.utn.persistenciatp1.repositories.ClienteRepository;
 import com.utn.persistenciatp1.repositories.ProductoRepository;
 import com.utn.persistenciatp1.repositories.RubroRepository;
+import com.utn.persistenciatp1.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +23,10 @@ public class PersistenciaTp1Application {
 	public RubroRepository rubroRepository;
 	@Autowired
 	public ProductoRepository productoRepository;
+	@Autowired
+	public UsuarioRepository usuarioRepository;
+	@Autowired
+	public ClienteRepository clienteRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PersistenciaTp1Application.class, args);
@@ -92,29 +100,54 @@ public class PersistenciaTp1Application {
 			productoRepository.save(napo);
 			productoRepository.save(jugo);
 
-			// Recupero los rubros desde la base de datos
-			List<Producto> productos = productoRepository.findAll();
-			if (!productos.isEmpty()){
-				System.out.println("Información recuperada de los productos:");
-				for (Producto producto : productos) {
-					producto.mostrarProducto();
-					System.out.println("----------------------------------------------");
-				}
-			}
+			// Creo un usuario
+			Usuario usuario = Usuario.builder()
+					.nombre("jazRillo")
+					.password("12345")
+					.rol("Cliente")
+					.build();
 
-			// Recupero los rubros desde la base de datos
+			usuarioRepository.save(usuario);
 
-			List<Rubro> rubros = rubroRepository.findAll();
-			if (!rubros.isEmpty()){
-				System.out.println("Información recuperada de los rubros:");
-				for (Rubro rubro : rubros) {
-					rubro.mostrarRubro();
-					System.out.println("-----------------------------------");
-				}
-			}
-
+			recuperarDatos();
 
 		};
+
+	}
+
+	private void recuperarDatos(){
+
+		// Recupero los rubros desde la base de datos
+		List<Producto> productos = productoRepository.findAll();
+		if (!productos.isEmpty()){
+			System.out.println("Información recuperada de los productos:");
+			for (Producto producto : productos) {
+				producto.mostrarProducto();
+				System.out.println("----------------------------------------------");
+			}
+		}
+
+		// Recupero los rubros desde la base de datos
+
+		List<Rubro> rubros = rubroRepository.findAll();
+		if (!rubros.isEmpty()){
+			System.out.println("Información recuperada de los rubros:");
+			for (Rubro rubro : rubros) {
+				rubro.mostrarRubro();
+				System.out.println("-----------------------------------");
+			}
+		}
+
+		// Recupero los usuarios desde la base de datos
+
+		List<Usuario> usuarios = usuarioRepository.findAll();
+		if (!usuarios.isEmpty()){
+			System.out.println("Información recuperada de los usuarios:");
+			for (Usuario usuario : usuarios) {
+				usuario.mostrarUsuario();
+				System.out.println("-----------------------------------");
+			}
+		}
 
 	}
 
