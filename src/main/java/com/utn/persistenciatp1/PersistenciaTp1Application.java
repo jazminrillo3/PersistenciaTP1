@@ -1,13 +1,7 @@
 package com.utn.persistenciatp1;
 
-import com.utn.persistenciatp1.entities.Cliente;
-import com.utn.persistenciatp1.entities.Producto;
-import com.utn.persistenciatp1.entities.Rubro;
-import com.utn.persistenciatp1.entities.Usuario;
-import com.utn.persistenciatp1.repositories.ClienteRepository;
-import com.utn.persistenciatp1.repositories.ProductoRepository;
-import com.utn.persistenciatp1.repositories.RubroRepository;
-import com.utn.persistenciatp1.repositories.UsuarioRepository;
+import com.utn.persistenciatp1.entities.*;
+import com.utn.persistenciatp1.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,7 +20,15 @@ public class PersistenciaTp1Application {
 	@Autowired
 	public UsuarioRepository usuarioRepository;
 	@Autowired
+	public DomicilioRepository domicilioRepository;
+	@Autowired
 	public ClienteRepository clienteRepository;
+	@Autowired
+	public PedidoRepository pedidoRepository;
+	@Autowired
+	public DetallePedidoRepository detallePedidoRepository;
+	@Autowired
+	public FacturaRepository facturaRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PersistenciaTp1Application.class, args);
@@ -104,10 +106,93 @@ public class PersistenciaTp1Application {
 			Usuario usuario = Usuario.builder()
 					.nombre("jazRillo")
 					.password("12345")
-					.rol("Cliente")
+					.rol(Usuario.Rol.CLIENTE)
 					.build();
 
+			// Creo PEDIDOS, sus FACTURAS y sus DETALLES
+
+			// Creo detalles de pedido
+			DetallePedido detalle1pedido1 = DetallePedido.builder()
+					.cantidad(1)
+					.subtotal(500d)
+					.producto(jugo)
+					.build();
+			detalle1pedido1.calcularSubtotal();
+
+			DetallePedido detalle2pedido1 = DetallePedido.builder()
+					.cantidad(1)
+					.producto(napo)
+					.build();
+			detalle2pedido1.calcularSubtotal();
+
+			Pedido pedido1 = Pedido.builder()
+					.fecha("06/09/2023")
+					.estado(Pedido.Estado.ENTREGADO)
+					.horaEstimadaEntrega("12:30")
+					.tipoEnvio(Pedido.TipoEnvio.RETIRA)
+					.build();
+
+			// Asigno la factura y los detalles al pedido
+			pedido1.agregarDetalle(detalle1pedido1);
+			pedido1.agregarDetalle(detalle2pedido1);
+			pedido1.calcularTotal();
+
+			// Creo factura
+			Factura facturaPedido1 = Factura.builder()
+					.fecha(pedido1.getFecha())
+					.numero(1)
+					.descuento(0d)
+					.formaPago(Factura.FormaPago.MERCADO_PAGO)
+					.build();
+			facturaPedido1.calcularTotal(pedido1);
+
+			pedido1.setFactura(facturaPedido1);
+
+			usuario.agregarPedido(pedido1);
+
+			//CREO SEGUNDO PEDIDO
+
+			DetallePedido detalle1pedido2 = DetallePedido.builder()
+					.cantidad(2)
+					.producto(muzza)
+					.build();
+			detalle1pedido2.calcularSubtotal();
+
+			Pedido pedido2 = Pedido.builder()
+					.fecha("08/09/2023")
+					.estado(Pedido.Estado.INICIADO)
+					.horaEstimadaEntrega("22:30")
+					.tipoEnvio(Pedido.TipoEnvio.DELIVERY)
+					.build();
+
+			//Asocio el detalle al pedido
+			pedido2.agregarDetalle(detalle1pedido2);
+			pedido2.calcularTotal();
+
+			// Creo factura
+			Factura facturaPedido2 = Factura.builder()
+					.fecha(pedido2.getFecha())
+					.numero(1)
+					.descuento(300d)
+					.formaPago(Factura.FormaPago.DEBITO)
+					.build();
+			facturaPedido2.calcularTotal(pedido2);
+
+			pedido2.setFactura(facturaPedido2);
+
+			usuario.agregarPedido(pedido2);
+
 			usuarioRepository.save(usuario);
+
+			pedidoRepository.save(pedido1);
+			pedidoRepository.save(pedido2);
+
+			facturaRepository.save(facturaPedido1);
+			facturaRepository.save(facturaPedido2);
+
+			detallePedidoRepository.save(detalle1pedido1);
+			detallePedidoRepository.save(detalle2pedido1);
+			detallePedidoRepository.save(detalle1pedido2);
 
 			recuperarDatos();
 
@@ -117,10 +202,10 @@ public class PersistenciaTp1Application {
 
 	private void recuperarDatos(){
 
-		// Recupero los rubros desde la base de datos
+		// Recupero los productos desde la base de datos
 		List<Producto> productos = productoRepository.findAll();
 		if (!productos.isEmpty()){
-			System.out.println("Información recuperada de los productos:");
+			System.out.println("---- Información recuperada de los productos: ----");
 			for (Producto producto : productos) {
 				producto.mostrarProducto();
 				System.out.println("----------------------------------------------");
@@ -131,7 +216,7 @@ public class PersistenciaTp1Application {
 
 		List<Rubro> rubros = rubroRepository.findAll();
 		if (!rubros.isEmpty()){
-			System.out.println("Información recuperada de los rubros:");
+			System.out.println("---- Información recuperada de los rubros: ----");
 			for (Rubro rubro : rubros) {
 				rubro.mostrarRubro();
 				System.out.println("-----------------------------------");
@@ -140,14 +225,19 @@ public class PersistenciaTp1Application {
 
 		// Recupero los usuarios desde la base de datos
 
+		// A su vez recupero sus pedidos y sus respectivos detalles y facturas desde la base de datos
+
 		List<Usuario> usuarios = usuarioRepository.findAll();
 		if (!usuarios.isEmpty()){
-			System.out.println("Información recuperada de los usuarios:");
+			System.out.println("---- Información recuperada de los usuarios: ----");
 			for (Usuario usuario : usuarios) {
 				usuario.mostrarUsuario();
 				System.out.println("-----------------------------------");
 			}
 		}
+
+
+
 
 	}
 
