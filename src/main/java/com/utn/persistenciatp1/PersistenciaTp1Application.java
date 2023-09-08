@@ -38,9 +38,9 @@ public class PersistenciaTp1Application {
 	@Bean
 	CommandLineRunner init() {
 		return args -> {
-			System.out.println("-----------------ESTOY FUNCIONANDO----------------");
 
-			// Creo los productos
+			// CREO LOS PRODUCTOS
+
 			Producto muzza = Producto.builder()
 					.tipo(Producto.Tipo.MANUFACTURADO)
 					.tiempoEstimadoCocina(8)
@@ -80,39 +80,43 @@ public class PersistenciaTp1Application {
 					.receta("Utilizamos naranjas maduras y jugosas, exprimidas cuidadosamente para obtener el jugo más puro y refrescante. Sin conservantes ni azúcares añadidos.")
 					.build();
 
-			// Creo los rubros
-			Rubro bebida = Rubro.builder()
-					.denominacion("Bebida")
-					.build();
+            // CREO LOS RUBROS
 
-			Rubro comida = Rubro.builder()
-					.denominacion("Comida")
-					.build();
+            Rubro bebida = Rubro.builder()
+                    .denominacion("Bebida")
+                    .build();
 
-			// Asocio los productos al rubro
+            Rubro comida = Rubro.builder()
+                    .denominacion("Comida")
+                    .build();
+
+			// ASOCIO LOS PRODUCTOS AL RUBRO
+
 			bebida.agregarProducto(jugo);
 			comida.agregarProducto(muzza);
 			comida.agregarProducto(napo);
 
-			// Guardo los objeto Rubro en la base de datos
-			rubroRepository.save(bebida);
-			rubroRepository.save(comida);
+			// CREO UN USUARIO
 
-			// Guardo los producto en la base de datos
-			productoRepository.save(muzza);
-			productoRepository.save(napo);
-			productoRepository.save(jugo);
-
-			// Creo un usuario
 			Usuario usuario = Usuario.builder()
 					.nombre("jazRillo")
 					.password("12345")
 					.rol(Usuario.Rol.CLIENTE)
 					.build();
 
-			// Creo PEDIDOS, sus FACTURAS y sus DETALLES
+			// CREO PEDIDOS, SUS FACTURAS Y SUS DETALLES
 
-			// Creo detalles de pedido
+            // CREO PRIMER PEDIDO
+
+            Pedido pedido1 = Pedido.builder()
+                    .fecha("06/09/2023")
+                    .estado(Pedido.Estado.ENTREGADO)
+                    .horaEstimadaEntrega("12:30")
+                    .tipoEnvio(Pedido.TipoEnvio.RETIRA)
+                    .build();
+
+			// CREO DETALLES DEL PRIMER PEDIDO
+
 			DetallePedido detalle1pedido1 = DetallePedido.builder()
 					.cantidad(1)
 					.subtotal(500d)
@@ -126,32 +130,41 @@ public class PersistenciaTp1Application {
 					.build();
 			detalle2pedido1.calcularSubtotal();
 
-			Pedido pedido1 = Pedido.builder()
-					.fecha("06/09/2023")
-					.estado(Pedido.Estado.ENTREGADO)
-					.horaEstimadaEntrega("12:30")
-					.tipoEnvio(Pedido.TipoEnvio.RETIRA)
-					.build();
+			// ASIGNO LOS DETALLES AL PEDIDO Y CALCULO EL TOTAL
 
-			// Asigno la factura y los detalles al pedido
 			pedido1.agregarDetalle(detalle1pedido1);
 			pedido1.agregarDetalle(detalle2pedido1);
 			pedido1.calcularTotal();
 
-			// Creo factura
+			// CREO LA FACTURA DEL PEDIDO
+
 			Factura facturaPedido1 = Factura.builder()
 					.fecha(pedido1.getFecha())
 					.numero(1)
 					.descuento(0d)
 					.formaPago(Factura.FormaPago.MERCADO_PAGO)
 					.build();
+
 			facturaPedido1.calcularTotal(pedido1);
 
+            // ASIGNO LA FACTURA AL PEDIDO
+
 			pedido1.setFactura(facturaPedido1);
+
+            //ASIGNO AL USUARIO EL PEDIDO 1
 
 			usuario.agregarPedido(pedido1);
 
 			//CREO SEGUNDO PEDIDO
+
+            Pedido pedido2 = Pedido.builder()
+                    .fecha("08/09/2023")
+                    .estado(Pedido.Estado.INICIADO)
+                    .horaEstimadaEntrega("22:30")
+                    .tipoEnvio(Pedido.TipoEnvio.DELIVERY)
+                    .build();
+
+            // CREO DETALLE DEL PEDIDO
 
 			DetallePedido detalle1pedido2 = DetallePedido.builder()
 					.cantidad(2)
@@ -159,18 +172,13 @@ public class PersistenciaTp1Application {
 					.build();
 			detalle1pedido2.calcularSubtotal();
 
-			Pedido pedido2 = Pedido.builder()
-					.fecha("08/09/2023")
-					.estado(Pedido.Estado.INICIADO)
-					.horaEstimadaEntrega("22:30")
-					.tipoEnvio(Pedido.TipoEnvio.DELIVERY)
-					.build();
+			// ASIGNO LOS DETALLES AL PEDIDO Y CALCULO EL TOTAL
 
-			//Asocio el detalle al pedido
 			pedido2.agregarDetalle(detalle1pedido2);
 			pedido2.calcularTotal();
 
-			// Creo factura
+			// CREO FACTURA DEL PEDIDO
+
 			Factura facturaPedido2 = Factura.builder()
 					.fecha(pedido2.getFecha())
 					.numero(1)
@@ -179,11 +187,15 @@ public class PersistenciaTp1Application {
 					.build();
 			facturaPedido2.calcularTotal(pedido2);
 
+            // ASIGNO LA FACTURA AL PEDIDO
+
 			pedido2.setFactura(facturaPedido2);
+
+            // ASIGNO EL PEDIDO AL USUARIO
 
 			usuario.agregarPedido(pedido2);
 
-			// Creo DOMICILIOS y se los asigno a un CLIENTE
+			// CREO UN CLIENTE
 
 			Cliente cliente = Cliente.builder()
 					.nombre("Jazmín")
@@ -192,8 +204,12 @@ public class PersistenciaTp1Application {
 					.telefono("261 2545962")
 					.build();
 
+            // LE ASIGNO LOS PEDIDOS AL CLIENTE
+
 			cliente.agregarPedido(pedido1);
 			cliente.agregarPedido(pedido2);
+
+            // CREO DOMICILIOS
 
 			Domicilio domicilio1 = Domicilio.builder()
 					.calle("San Martín")
@@ -207,6 +223,17 @@ public class PersistenciaTp1Application {
 					.localidad("San Isidro")
 					.build();
 
+            // AHORA PERSISTO LOS DATOS EN LA BASE DE DATOS
+
+			rubroRepository.save(bebida);
+			rubroRepository.save(comida);
+
+			// NO HACEN FALTA PERSISTIRLOS, AL SER CONTENIDOS POR RUBRO, SE PERSISTE CUANDO LO PERSISTO
+
+			// productoRepository.save(muzza);
+			// productoRepository.save(napo);
+			// productoRepository.save(jugo);
+
 			domicilioRepository.save(domicilio1);
 			domicilioRepository.save(domicilio2);
 
@@ -218,20 +245,22 @@ public class PersistenciaTp1Application {
 
 			usuarioRepository.save(usuario);
 
+			clienteRepository.save(cliente);
+
 			pedidoRepository.save(pedido1);
 			pedidoRepository.save(pedido2);
-
-			clienteRepository.save(cliente);
 
 			domicilioRepository.save(domicilio1);
 			domicilioRepository.save(domicilio2);
 
-			facturaRepository.save(facturaPedido1);
-			facturaRepository.save(facturaPedido2);
+			// NO HACEN FALTA PERSISTIRLOS, AL SER CONTENIDOS POR PEDIDO, SE PERSISTE CUANDO LO PERSISTO
 
-			detallePedidoRepository.save(detalle1pedido1);
-			detallePedidoRepository.save(detalle2pedido1);
-			detallePedidoRepository.save(detalle1pedido2);
+			//facturaRepository.save(facturaPedido1);
+			//facturaRepository.save(facturaPedido2);
+
+            //detallePedidoRepository.save(detalle1pedido1);
+            //detallePedidoRepository.save(detalle2pedido1);
+            //detallePedidoRepository.save(detalle1pedido2);
 
 			recuperarDatos();
 
@@ -241,7 +270,10 @@ public class PersistenciaTp1Application {
 
 	private void recuperarDatos(){
 
-		// Recupero los productos desde la base de datos
+		// RECUPERO LOS DATOS DE LA BASE DE DATOS
+
+		// RECUPERO PRODUCTOS
+
 		List<Producto> productos = productoRepository.findAll();
 		if (!productos.isEmpty()){
 			System.out.println("---- Información recuperada de los productos: ----");
