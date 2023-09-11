@@ -1,5 +1,6 @@
 package com.utn.persistenciatp1.entities;
 
+import com.utn.persistenciatp1.enumeraciones.FormaPago;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,10 +22,6 @@ public class Factura extends BaseEntidad {
     @Enumerated(EnumType.STRING)
     private FormaPago formaPago;
     private Double total;
-
-    public enum FormaPago{
-        EFECTIVO, MERCADO_PAGO, DEBITO, CREDITO,
-    }
 
     public void calcularTotal(Pedido p){
         total = p.getTotal() - descuento;

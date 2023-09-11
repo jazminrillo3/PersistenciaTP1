@@ -1,5 +1,6 @@
 package com.utn.persistenciatp1.entities;
 
+import com.utn.persistenciatp1.enumeraciones.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,10 +27,6 @@ public class Usuario extends BaseEntidad {
     @JoinColumn(name = "usuario_id")
     @Builder.Default
     private List<Pedido> pedidos = new ArrayList<>();
-
-    public enum Rol{
-        ADMIN, CLIENTE, COCINERO, CAJERO, DELIVERY;
-    }
 
     public void agregarPedido(Pedido p){
         pedidos.add(p);

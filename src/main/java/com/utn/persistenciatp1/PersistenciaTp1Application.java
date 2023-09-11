@@ -333,7 +333,6 @@ public class PersistenciaTp1Application {
 			}
 		}
 
-
 	}
 
 	public List<Domicilio> encontrarDomicilios(List<Domicilio> domicilios, Cliente cliente){

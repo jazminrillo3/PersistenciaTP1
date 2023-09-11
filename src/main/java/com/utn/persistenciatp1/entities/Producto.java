@@ -1,5 +1,6 @@
 package com.utn.persistenciatp1.entities;
 
+import com.utn.persistenciatp1.enumeraciones.TipoProducto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 public class Producto extends BaseEntidad{
 
     @Enumerated(EnumType.STRING)
-    private Tipo tipo;
+    private TipoProducto tipo;
     private int tiempoEstimadoCocina;
     private String denominacion;
     private Double precioVenta;
@@ -27,10 +28,6 @@ public class Producto extends BaseEntidad{
     private String unidadMedida;
     private String foto;
     private String receta;
-
-    public enum Tipo{
-        MANUFACTURADO, INSUMO;
-    }
 
     public void mostrarProducto(){
         System.out.println("Tipo: " + tipo);

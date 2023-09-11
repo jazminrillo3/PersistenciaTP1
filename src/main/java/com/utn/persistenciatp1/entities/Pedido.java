@@ -1,5 +1,7 @@
 package com.utn.persistenciatp1.entities;
 
+import com.utn.persistenciatp1.enumeraciones.Estado;
+import com.utn.persistenciatp1.enumeraciones.TipoEnvio;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,14 +34,6 @@ public class Pedido extends BaseEntidad{
     @JoinColumn(name = "pedido_id")
     @Builder.Default
     private List<DetallePedido> detalles = new ArrayList<>();
-
-    public enum Estado{
-        INICIADO, PREPARACION, ENTREGADO;
-    }
-
-    public enum TipoEnvio{
-        DELIVERY, RETIRA;
-    }
 
     public void agregarDetalle(DetallePedido d){
         detalles.add(d);
